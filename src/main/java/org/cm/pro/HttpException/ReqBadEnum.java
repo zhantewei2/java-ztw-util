@@ -1,7 +1,5 @@
 package org.cm.pro.HttpException;
 
-import org.jboss.netty.handler.codec.http.HttpMethod;
-
 public enum ReqBadEnum {
     /***
      * author: zhantewei
