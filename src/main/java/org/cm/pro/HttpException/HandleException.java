@@ -22,7 +22,6 @@ public class HandleException {
             return new ResponseEntity(((BaseException) e).getContent(),((BaseException) e).getStatus());
         }
         else if(e instanceof ProfileException){
-            Object a=1;
             return new ResponseEntity(
                     ((ProfileException) e).getContent(),
                 HttpStatus.OK

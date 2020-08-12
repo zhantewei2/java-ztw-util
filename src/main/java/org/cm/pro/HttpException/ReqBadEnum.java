@@ -24,7 +24,10 @@ public enum ReqBadEnum {
     //更新-不存在
     UpdateNotFound(301),
     // 已经存在的不能再更新
-    UpdateAlreadyExist(302);
+    UpdateAlreadyExist(302),
+    // feign失败
+    BadFeign(407);
+
 
     private int typeCode;
     private ReqBadEnum(int type){

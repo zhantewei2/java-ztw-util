@@ -1,8 +1,12 @@
 package org.cm.pro.utils;
 
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cm.pro.utils.entity.RequestResult;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
@@ -65,7 +69,6 @@ public class ZTWReq {
     )throws Exception{
         if (url.startsWith("https")) HTTPSTrustManager.allowAllSSL();
         if(!params.equals(""))url=url+"?"+params;
-        System.out.println(url);
         HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
         try {
             conn.setConnectTimeout(20000);
@@ -86,20 +89,30 @@ public class ZTWReq {
             }
             conn.connect();
             RequestResult result = new RequestResult();
-            result.setStatusCode(conn.getResponseCode());
+            int statusCode=conn.getResponseCode();
+            result.setStatusCode(statusCode);
             result.setHeaders(conn.getHeaderFields());
+
+            InputStream inputStream;
+            try{
+                inputStream=conn.getInputStream();
+            }catch (IOException e){
+                inputStream=conn.getErrorStream();
+            }
             result.setBuffer(ZTWMethod.getBytesFromInputStream(
-                    conn.getInputStream()
+                    inputStream
             ));
             return result;
         }catch(Exception e){
+            e.printStackTrace();
             throw e;
         }finally {
             if(conn!=null)conn.disconnect();
         }
     }
 
-    public static byte[] handlePostBody(Map<String,Object> param){
-        return JSON.toJSONString(param).getBytes();
+    public static byte[] handlePostBody(Map<String,Object> param)throws JsonProcessingException {
+        ObjectMapper m=new ObjectMapper();
+        return m.writeValueAsBytes(param);
     }
 }
